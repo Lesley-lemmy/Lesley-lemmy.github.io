@@ -1,0 +1,2509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SCWIS System Interfaces - Interactive Prototype (English)</title>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+    background: #f5f7fa;
+    padding: 20px;
+  }
+  
+  /* System Switcher */
+  .system-switcher {
+    max-width: 420px;
+    margin: 0 auto 20px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  
+  .system-switcher h2 {
+    font-size: 18px;
+    margin-bottom: 12px;
+    color: #1a2b4a;
+  }
+  
+  .system-tabs {
+    display: flex;
+    gap: 8px;
+  }
+  
+  .system-tab {
+    flex: 1;
+    padding: 10px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    background: #fff;
+    cursor: pointer;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s;
+  }
+  
+  .system-tab:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+  
+  .system-tab.active {
+    color: #fff;
+  }
+  
+  .system-tab.student.active {
+    background: #2E5AAC;
+    border-color: #2E5AAC;
+  }
+  
+  .system-tab.pgcc.active {
+    background: #5B3FB8;
+    border-color: #5B3FB8;
+  }
+  
+  .system-tab.ambassador.active {
+    background: #2E7D32;
+    border-color: #2E7D32;
+  }
+  
+  /* Phone Frame */
+  .phone-frame {
+    max-width: 420px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 24px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    overflow: hidden;
+    display: none;
+  }
+  
+  .phone-frame.active {
+    display: block;
+  }
+  
+  /* Top Bar */
+  .top-bar {
+    padding: 16px 20px;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 16px;
+    font-weight: 600;
+  }
+  
+  .top-bar.student { background: #2E5AAC; }
+  .top-bar.pgcc { background: #5B3FB8; }
+  .top-bar.ambassador { background: #2E7D32; }
+  
+  .top-bar .back-btn {
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    background: rgba(255,255,255,0.2);
+    font-size: 14px;
+  }
+  
+  .top-bar .avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+  }
+  
+  /* Nav Bar */
+  .nav-bar {
+    padding: 12px 20px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+    gap: 20px;
+    font-size: 15px;
+    overflow-x: auto;
+  }
+  
+  .nav-item {
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: all 0.2s;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  
+  .nav-item:hover {
+    background: #e0e0e0;
+  }
+  
+  .nav-item.active {
+    font-weight: 700;
+  }
+  
+  .nav-item.active.student { background: #E3F2FD; color: #2E5AAC; }
+  .nav-item.active.pgcc { background: #EDE7F6; color: #5B3FB8; }
+  .nav-item.active.ambassador { background: #E8F5E9; color: #2E7D32; }
+  
+  /* Main Content */
+  .main-content {
+    padding: 20px;
+    min-height: 500px;
+    max-height: 600px;
+    overflow-y: auto;
+  }
+  
+  /* Card */
+  .card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+    border: 2px solid #e0e0e0;
+    transition: all 0.2s;
+  }
+  
+  .card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  
+  .card.student { border-color: #2E5AAC; background: #f8fbff; }
+  .card.pgcc { border-color: #5B3FB8; background: #faf8ff; }
+  .card.ambassador { border-color: #2E7D32; background: #f8fff9; }
+  
+  .card-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .card-content {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #555;
+    margin-bottom: 12px;
+  }
+  
+  .card-meta {
+    font-size: 13px;
+    color: #777;
+    margin-bottom: 10px;
+  }
+  
+  /* Button */
+  .btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-right: 8px;
+    margin-bottom: 8px;
+  }
+  
+  .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  }
+  
+  .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+  
+  .btn-primary.student { background: #2E5AAC; color: #fff; }
+  .btn-primary.pgcc { background: #5B3FB8; color: #fff; }
+  .btn-primary.ambassador { background: #2E7D32; color: #fff; }
+  
+  .btn-secondary {
+    background: #e0e0e0;
+    color: #555;
+  }
+  
+  .btn-danger {
+    background: #D32F2F;
+    color: #fff;
+  }
+  
+  .btn-large {
+    width: 100%;
+    padding: 14px 20px;
+    font-size: 16px;
+  }
+  
+  /* Bottom Nav */
+  .bottom-nav {
+    display: flex;
+    padding: 12px 0;
+    background: #fff;
+    border-top: 1px solid #e0e0e0;
+  }
+  
+  .bottom-nav-item {
+    flex: 1;
+    text-align: center;
+    padding: 8px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .bottom-nav-item .icon {
+    font-size: 22px;
+    margin-bottom: 4px;
+  }
+  
+  .bottom-nav-item.active.student { color: #2E5AAC; font-weight: 700; }
+  .bottom-nav-item.active.pgcc { color: #5B3FB8; font-weight: 700; }
+  .bottom-nav-item.active.ambassador { color: #2E7D32; font-weight: 700; }
+  
+  /* Stats Bar */
+  .stats-bar {
+    display: flex;
+    gap: 12px;
+    padding: 16px 20px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .stat-item {
+    flex: 1;
+    text-align: center;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    transition: all 0.2s;
+  }
+  
+  .stat-item:hover {
+    background: #e8e8e8;
+  }
+  
+  .stat-value {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  
+  .stat-value.student { color: #2E5AAC; }
+  .stat-value.pgcc { color: #5B3FB8; }
+  .stat-value.ambassador { color: #2E7D32; }
+  
+  .stat-label {
+    font-size: 12px;
+    color: #777;
+  }
+  
+  /* Badge */
+  .badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-left: 8px;
+  }
+  
+  .badge-high { background: #ffebee; color: #c62828; }
+  .badge-medium { background: #fff3e0; color: #ef6c00; }
+  .badge-low { background: #e8f5e9; color: #2e7d32; }
+  
+  /* Post */
+  .post {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+  
+  .post-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  
+  .post-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #2E5AAC;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+    font-weight: 600;
+  }
+  
+  .post-info {
+    flex: 1;
+  }
+  
+  .post-author {
+    font-weight: 600;
+    font-size: 15px;
+  }
+  
+  .post-time {
+    font-size: 13px;
+    color: #777;
+  }
+  
+  .post-content {
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 12px;
+    color: #333;
+  }
+  
+  .post-actions {
+    display: flex;
+    gap: 20px;
+    color: #777;
+    font-size: 14px;
+  }
+  
+  .post-action {
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+  
+  .post-action:hover {
+    color: #2E5AAC;
+  }
+  
+  /* Input */
+  .input-group {
+    margin-bottom: 16px;
+  }
+  
+  .input-label {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #333;
+  }
+  
+  .input-field {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+  }
+  
+  .input-field:focus {
+    outline: none;
+    border-color: #2E5AAC;
+  }
+  
+  textarea.input-field {
+    resize: vertical;
+    min-height: 100px;
+  }
+  
+  /* Toggle Switch */
+  .toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+  }
+  
+  .toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+  }
+  
+  input:checked + .slider {
+    background-color: #2E5AAC;
+  }
+  
+  input:checked + .slider:before {
+    transform: translateX(24px);
+  }
+  
+  /* Divider */
+  .divider {
+    height: 1px;
+    background: #e0e0e0;
+    margin: 16px 0;
+  }
+  
+  /* Alert */
+  .alert {
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    margin-bottom: 16px;
+  }
+  
+  .alert-warning {
+    background: #fff3e0;
+    border: 1px solid #ffb74d;
+    color: #e65100;
+  }
+  
+  .alert-info {
+    background: #e3f2fd;
+    border: 1px solid #64b5f6;
+    color: #0d47a1;
+  }
+  
+  .alert-danger {
+    background: #ffebee;
+    border: 1px solid #ef5350;
+    color: #c62828;
+  }
+  
+  /* Page */
+  .page {
+    display: none;
+  }
+  
+  .page.active {
+    display: block;
+  }
+  
+  /* Checkbox */
+  .checkbox-group {
+    margin-bottom: 12px;
+  }
+  
+  .checkbox-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 0;
+  }
+  
+  .checkbox-item input {
+    width: 18px;
+    height: 18px;
+    margin-right: 10px;
+    cursor: pointer;
+  }
+  
+  .checkbox-item label {
+    font-size: 14px;
+    cursor: pointer;
+  }
+  
+  /* Counselor Card */
+  .counselor-card {
+    background: #fff;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .counselor-card:hover {
+    border-color: #2E5AAC;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  
+  .counselor-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  
+  .counselor-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: #2E5AAC;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 16px;
+    font-size: 24px;
+    font-weight: 700;
+  }
+  
+  .counselor-info {
+    flex: 1;
+  }
+  
+  .counselor-name {
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  
+  .counselor-title {
+    font-size: 14px;
+    color: #777;
+  }
+  
+  .counselor-details {
+    font-size: 14px;
+    line-height: 1.8;
+    color: #555;
+  }
+  
+  .counselor-slots {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #e0e0e0;
+  }
+  
+  .slot-title {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #777;
+  }
+  
+  .time-slots {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .time-slot {
+    padding: 6px 12px;
+    border: 1px solid #2E5AAC;
+    border-radius: 6px;
+    font-size: 13px;
+    color: #2E5AAC;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .time-slot:hover {
+    background: #2E5AAC;
+    color: #fff;
+  }
+  
+  /* Collapsible */
+  .collapsible {
+    cursor: pointer;
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  
+  .collapsible:hover {
+    background: #e8e8e8;
+  }
+  
+  .collapsible-content {
+    display: none;
+    padding: 12px;
+    background: #fafafa;
+    border-radius: 8px;
+    margin-bottom: 8px;
+  }
+  
+  .collapsible-content.active {
+    display: block;
+  }
+  
+  /* Timeline */
+  .timeline-item {
+    padding: 12px;
+    background: #f8f9fa;
+    border-left: 4px solid #5B3FB8;
+    border-radius: 6px;
+    margin-bottom: 10px;
+  }
+  
+  .timeline-time {
+    font-size: 13px;
+    font-weight: 700;
+    color: #5B3FB8;
+    margin-bottom: 4px;
+  }
+  
+  .timeline-content {
+    font-size: 14px;
+    color: #555;
+  }
+  
+  /* Radio Group */
+  .radio-group {
+    margin-bottom: 12px;
+  }
+  
+  .radio-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 0;
+  }
+  
+  .radio-item input {
+    width: 18px;
+    height: 18px;
+    margin-right: 10px;
+    cursor: pointer;
+  }
+  
+  .radio-item label {
+    font-size: 14px;
+    cursor: pointer;
+  }
+  
+  /* Info Box */
+  .info-box {
+    background: #f8f9fa;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 16px;
+  }
+  
+  .info-row {
+    display: flex;
+    padding: 6px 0;
+    font-size: 14px;
+  }
+  
+  .info-label {
+    font-weight: 600;
+    margin-right: 8px;
+    color: #555;
+  }
+  
+  .info-value {
+    color: #777;
+  }
+  
+  /* Link */
+  .link {
+    color: #2E5AAC;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+  
+  .link:hover {
+    color: #1E3A7C;
+  }
+</style>
+</head>
+<body>
+
+<!-- System Switcher -->
+<div class="system-switcher">
+  <h2>📱 SCWIS System Interfaces - Interactive Prototype</h2>
+  <div class="system-tabs">
+    <div class="system-tab student active" onclick="switchSystem('student')">
+      Student
+    </div>
+    <div class="system-tab pgcc" onclick="switchSystem('pgcc')">
+      PGCC Professional
+    </div>
+    <div class="system-tab ambassador" onclick="switchSystem('ambassador')">
+      Care Ambassador
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     STUDENT INTERFACE
+═══════════════════════════════════════ -->
+<div id="student-interface" class="phone-frame active">
+  
+  <!-- Page 1: Campus Wall Home -->
+  <div id="student-wall" class="page active">
+    <div class="top-bar student">
+      <div>SCWIS Campus Wellness</div>
+      <div class="avatar">👤</div>
+    </div>
+    
+    <div class="alert alert-info" style="margin: 16px 20px 0;">
+      📊 Students Supported: 356 | Alumni Donations: $125,000 | Donors: 48
+    </div>
+    
+    <div class="main-content">
+      <div class="post">
+        <div class="post-header">
+          <div class="post-avatar">A</div>
+          <div class="post-info">
+            <div class="post-author">Anonymous</div>
+            <div class="post-time">15 mins ago</div>
+          </div>
+        </div>
+        <div class="post-content">
+          Finals week stress is killing me rn 😓💀 Anyone else drowning in assignments?? Library's packed 24/7... need some study buddies to keep me sane lol
+        </div>
+        <div class="post-actions">
+          <span class="post-action">👍 42</span>
+          <span class="post-action">💬 12</span>
+          <span class="post-action">🔗 Share</span>
+        </div>
+      </div>
+      
+      <div class="post">
+        <div class="post-header">
+          <div class="post-avatar">A</div>
+          <div class="post-info">
+            <div class="post-author">Anonymous</div>
+            <div class="post-time">1 hour ago</div>
+          </div>
+        </div>
+        <div class="post-content">
+          Just crushed 5K at the gym!! 🏃‍♀️✨ Finally broke through my procrastination slump haha. Feeling so much better mentally tbh, highly recommend getting that endorphin rush 💪😊
+        </div>
+        <div class="post-actions">
+          <span class="post-action">👍 87</span>
+          <span class="post-action">💬 23</span>
+          <span class="post-action">🔗 Share</span>
+        </div>
+      </div>
+      
+      <div class="post">
+        <div class="post-header">
+          <div class="post-avatar">A</div>
+          <div class="post-info">
+            <div class="post-author">Anonymous</div>
+            <div class="post-time">3 hours ago</div>
+          </div>
+        </div>
+        <div class="post-content">
+          Been pulling all-nighters lately... like 2-3am regularly 😴😵 Feeling kinda anxious about everything idk how to deal with it anymore... anyone got tips?
+        </div>
+        <div class="post-actions">
+          <span class="post-action">👍 156</span>
+          <span class="post-action">💬 45</span>
+          <span class="post-action">🔗 Share</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="bottom-nav">
+      <div class="bottom-nav-item active student" onclick="showStudentPage('wall')">
+        <div class="icon">🏠</div>
+        <div>Wall</div>
+      </div>
+      <div class="bottom-nav-item" onclick="showStudentPage('care')">
+        <div class="icon">💙</div>
+        <div>Care</div>
+      </div>
+      <div class="bottom-nav-item" onclick="showStudentPage('messages')">
+        <div class="icon">🔔</div>
+        <div>Messages</div>
+      </div>
+      <div class="bottom-nav-item" onclick="showStudentPage('privacy')">
+        <div class="icon">⚙️</div>
+        <div>Privacy</div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Page 2: Care & Support Hub -->
+  <div id="student-care" class="page">
+    <div class="top-bar student">
+      <div class="back-btn" onclick="showStudentPage('wall')">← Back</div>
+      <div>Care & Support</div>
+      <div></div>
+    </div>
+    
+    <div class="main-content">
+      <!-- Scheduled Appointment (Only shows if appointment exists) -->
+      <div class="card student" id="scheduled-appointment" style="display: block;">
+        <div class="card-title">📅 Scheduled Professional Counselling</div>
+        <div class="card-content">
+          <strong>Time Slot:</strong> Today 09:00 - 10:00<br>
+          <strong>Service Type:</strong> Regular Counselling Session<br>
+          <strong>Status:</strong> Confirmed & Scheduled
+        </div>
+        <button class="btn btn-secondary" onclick="showStudentPage('reschedule-request')">Request Reschedule</button>
+        <button class="btn btn-secondary" onclick="alert('Cancellation request submitted')">Cancel Appointment</button>
+      </div>
+      
+      <!-- Professional Counselling -->
+      <div class="card student">
+        <div class="card-title">🧑‍⚕️ Professional Counselling</div>
+        <div class="card-content">
+          If you're experiencing significant emotional distress, our professional counsellors are here to help. All consultations are strictly confidential.
+        </div>
+        <button class="btn btn-primary student btn-large" onclick="showStudentPage('book-counselor')">Book Professional Counsellor</button>
+      </div>
+      
+      <!-- Peer Care Invitation (Only shows when invitation received) -->
+      <div class="card student">
+        <div class="card-title">💬 Anonymous Peer Care Invitation</div>
+        <div class="card-content">
+          A care ambassador would like to chat with you and provide peer support. This is completely anonymous and voluntary - you can decline anytime.
+        </div>
+        <button class="btn btn-primary student" onclick="showStudentPage('chat')">Accept Invitation</button>
+        <button class="btn btn-secondary">No Thanks</button>
+      </div>
+      
+      <!-- Other Resources -->
+      <div class="card student">
+        <div class="card-title">📚 Additional Support Resources</div>
+        <div class="card-content">
+          • 24/7 Mental Health Hotline: 1-800-XXX-XXXX<br>
+          • Campus Health Center: Mon-Fri 9:00-17:00
+        </div>
+      </div>
+    </div>
+    
+    <div class="bottom-nav">
+      <div class="bottom-nav-item" onclick="showStudentPage('wall')">
+        <div class="icon">🏠</div>
+        <div>Wall</div>
+      </div>
+      <div class="bottom-nav-item active student" onclick="showStudentPage('care')">
+        <div class="icon">💙</div>
+        <div>Care</div>
+      </div>
+      <div class="bottom-nav-item" onclick="showStudentPage('messages')">
+        <div class="icon">🔔</div>
+        <div>Messages</div>
+      </div>
+      <div class="bottom-nav-item" onclick="showStudentPage('privacy')">
+        <div class="icon">⚙️</div>
+        <div>Privacy</div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Page 3: Book Counselor -->
+  <div id="student-book-counselor" class="page">
+    <div class="top-bar student">
+      <div class="back-btn" onclick="showStudentPage('care')">← Back</div>
+      <div>Select Counsellor</div>
+      <div></div>
+    </div>
+    
+    <div class="main-content">
+      <div class="alert alert-info">
+        Choose a counsellor based on their specialty and available time slots. All sessions are confidential.
+      </div>
+      
+      <div class="counselor-card" onclick="showStudentPage('book-slot')">
+        <div class="counselor-header">
+          <div class="counselor-avatar">DW</div>
+          <div class="counselor-info">
+            <div class="counselor-name">Dr. Wang</div>
+            <div class="counselor-title">Licensed Clinical Psychologist</div>
+          </div>
+        </div>
+        <div class="counselor-details">
+          <strong>Gender:</strong> Female<br>
+          <strong>Specialty:</strong> Anxiety, Depression, Academic Stress<br>
+          <strong>Location:</strong> PGCC Room 302
+        </div>
+        <div class="counselor-slots">
+          <div class="slot-title">Available Today:</div>
+          <div class="time-slots">
+            <div class="time-slot">14:00</div>
+            <div class="time-slot">15:00</div>
+            <div class="time-slot">16:00</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="counselor-card" onclick="showStudentPage('book-slot')">
+        <div class="counselor-header">
+          <div class="counselor-avatar">JL</div>
+          <div class="counselor-info">
+            <div class="counselor-name">Dr. Johnson Lee</div>
+            <div class="counselor-title">Clinical Counsellor</div>
+          </div>
+        </div>
+        <div class="counselor-details">
+          <strong>Gender:</strong> Male<br>
+          <strong>Specialty:</strong> Relationship Issues, Life Transitions<br>
+          <strong>Location:</strong> PGCC Room 305
+        </div>
+        <div class="counselor-slots">
+          <div class="slot-title">Available Today:</div>
+          <div class="time-slots">
+            <div class="time-slot">10:00</div>
+            <div class="time-slot">11:00</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="counselor-card" onclick="showStudentPage('book-slot')">
+        <div class="counselor-header">
+          <div class="counselor-avatar">SC</div>
+          <div class="counselor-info">
+            <div class="counselor-name">Dr. Sarah Chen</div>
+            <div class="counselor-title">Mental Health Specialist</div>
+          </div>
+        </div>
+        <div class="counselor-details">
+          <strong>Gender:</strong> Female<br>
+          <strong>Specialty:</strong> Trauma, Grief, Self-Esteem<br>
+          <strong>Location:</strong> PGCC Room 308
+        </div>
+        <div class="counselor-slots">
+          <div class="slot-title">Available Tomorrow:</div>
+          <div class="time-slots">
+            <div class="time-slot">09:00</div>
+            <div class="time-slot">13:00</div>
+            <div class="time-slot">14:00</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="counselor-card" onclick="showStudentPage('book-slot')">
+        <div class="counselor-header">
+          <div class="counselor-avatar">MP</div>
+          <div class="counselor-info">
+            <div class="counselor-name">Dr. Michael Park</div>
+            <div class="counselor-title">Behavioral Therapist</div>
+          </div>
+        </div>
+        <div class="counselor-details">
+          <strong>Gender:</strong> Male<br>
+          <strong>Specialty:</strong> ADHD, Mindfulness, Sleep Issues<br>
+          <strong>Location:</strong> PGCC Room 310
+        </div>
+        <div class="counselor-slots">
+          <div class="slot-title">Available Tomorrow:</div>
+          <div class="time-slots">
+            <div class="time-slot">10:00</div>
+            <div class="time-slot">15:00</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Page 4: Book Time Slot (Placeholder) -->
+  <div id="student-book-slot" class="page">
+    <div class="top-bar student">
+      <div class="back-btn" onclick="showStudentPage('book-counselor')">← Back</div>
+      <div>Confirm Booking</div>
+      <div></div>
+    </div>
+    
+    <div class="main-content">
+      <div class="alert alert-info">
+        Booking confirmation page - Select time slot and confirm appointment
+      </div>
+      <button class="btn btn-primary student btn-large" onclick="alert('Appointment booked!'); showStudentPage('care');">Confirm Booking</button>
+    </div>
+  </div>
+  
+  <!-- Page 5: Reschedule Request -->
+  <div id="student-reschedule-request" class="page">
+    <div class="top-bar student">
+      <div class="back-btn" onclick="showStudentPage('care')">← Back</div>
+      <div>Reschedule Request</div>
+      <div></div>
+    </div>
+    
+    <div class="main-content">
+      <div class="info-box">
+        <div style="font-weight: 700; margin-bottom: 8px;">Current Appointment (Read-only)</div>
+        <div class="info-row">
+          <div class="info-label">Time Slot:</div>
+          <div class="info-value">Today 09:00 - 10:00</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Service Type:</div>
+          <div class="info-value">One-on-one Professional Counselling</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Status:</div>
+          <div class="info-value">Scheduled</div>
+        </div>
+      </div>
+      
+      <div class="input-group">
+        <div class="input-label">1. Preferred Alternative Time Slot</div>
+        <div class="radio-group">
+          <div class="radio-item">
+            <input type="radio" name="newtime" id="time1">
+            <label for="time1">Tomorrow 10:00 - 11:00</label>
+          </div>
+          <div class="radio-item">
+            <input type="radio" name="newtime" id="time2">
+            <label for="time2">Tomorrow 14:00 - 15:00</label>
+          </div>
+          <div class="radio-item">
+            <input type="radio" name="newtime" id="time3">
+            <label for="time3">Day After Tomorrow 09:00 - 10:00</label>
+          </div>
+        </div>
+      </div>
+      
+      <div class="input-group">
+        <div class="input-label">2. Reason for Reschedule (Select One)</div>
+        <div class="radio-group">
+          <div class="radio-item">
+            <input type="radio" name="reason" id="reason1">
+            <label for="reason1">Class Schedule Conflict</label>
+          </div>
+          <div class="radio-item">
+            <input type="radio" name="reason" id="reason2">
+            <label for="reason2">Not Feeling Well</label>
+          </div>
+          <div class="radio-item">
+            <input type="radio" name="reason" id="reason3">
+            <label for="reason3">Temporary Personal Matter</label>
+          </div>
+          <div class="radio-item">
+            <input type="radio" name="reason" id="reason4">
+            <label for="reason4">Other Personal Reason</label>
+          </div>
+        </div>
+      </div>
+      
+      <div class="alert alert-warning">
+        <strong>Important Notice:</strong><br>
+        • Reschedule requests require PGCC counsellor approval<br>
+        • Please check system notifications for results<br>
+        • High-risk follow-up sessions cannot be rescheduled multiple times without justification
+      </div>
+      
+      <button class="btn btn-primary student btn-large" onclick="alert('Reschedule request submitted'); showStudentPage('care');">Submit Reschedule Request</button>
+      <button class="btn btn-secondary btn-large" onclick="showStudentPage('care')">Cancel</button>
+    </div>
+  </div>
+  
+  <!-- Page 6: Messages & Notifications -->
+  <div id="student-messages" class="page">
+    <div class="top-bar student">
+      <div class="back-btn" onclick="showStudentPage('wall')">← Back</div>
+      <div>Messages & Notifications</div>
+      <div style="font-size: 14px; cursor: pointer;">Clear</div>
+    </div>
+    
+    <div class="nav-bar">
+      <div class="nav-item active student">All</div>
+      <div class="nav-item">Wall</div>
+      <div class="nav-item">System</div>
+    </div>
+    
+    <div class="main-content">
+      <div class="card" onclick="showStudentPage('care')" style="cursor: pointer;">
+        <div class="card-meta">System Notification · 2 hours ago</div>
+        <div class="card-content">
+          You have a new anonymous peer care invitation
+        </div>
+      </div>
+      
+      <div class="card" onclick="showStudentPage('care')" style="cursor: pointer;">
+        <div class="card-meta">System Notification · Today 09:00</div>
+        <div class="card-content">
+          Your professional counselling appointment is confirmed: Tomorrow 14:00
+        </div>
+      </div>
+      
+      <div class="card" onclick="showStudentPage('wall')" style="cursor: pointer;">
+        <div class="card-meta">Wall Notification · Yesterday 18:23</div>
+        <div class="card-content">
+          Your post "Finals study group?" received new comments
+        </div>
+      </div>
+    </div>
+    
+    <div class="bottom-nav">
+      <div class="bottom-nav-item" onclick="showStudentPage('wall')">
+        <div class="icon">🏠</div>
+        <div>Wall</div>
+      </div>
+      <div class="bottom-nav-item" onclick="showStudentPage('care')">
+        <div class="icon">💙</div>
+        <div>Care</div>
+      </div>
+      <div class="bottom-nav-item active student" onclick="showStudentPage('messages')">
+        <div class="icon">🔔</div>
+        <div>Messages</div>
+      </div>
+      <div class="bottom-nav-item" onclick="showStudentPage('privacy')">
+        <div class="icon">⚙️</div>
+        <div>Privacy</div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Page 7: Privacy Settings -->
+  <div id="student-privacy" class="page">
+    <div class="top-bar student">
+      <div class="back-btn" onclick="showStudentPage('wall')">← Back</div>
+      <div>Privacy Settings</div>
+      <div></div>
+    </div>
+    
+    <div class="main-content">
+      <!-- Data Collection Permissions -->
+      <div class="card student">
+        <div class="card-title">📊 Data Collection Permissions</div>
+        <div class="divider"></div>
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0;">
+          <span>Library Data</span>
+          <label class="toggle-switch">
+            <input type="checkbox" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0;">
+          <span>Dining Hall Data</span>
+          <label class="toggle-switch">
+            <input type="checkbox" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0;">
+          <span>Dorm Access Data</span>
+          <label class="toggle-switch">
+            <input type="checkbox" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0;">
+          <span>LMS Data</span>
+          <label class="toggle-switch">
+            <input type="checkbox" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0;">
+          <span>Campus Wall Data</span>
+          <label class="toggle-switch">
+            <input type="checkbox" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+      
+      <!-- My Data -->
+      <div class="card student">
+        <div class="card-title">📁 My Data</div>
+        <div class="card-content">
+          You can download or permanently delete all your data at any time
+        </div>
+        <button class="btn btn-secondary btn-large">Download All My Data</button>
+        <button class="btn btn-danger btn-large">Permanently Delete All Data</button>
+      </div>
+      
+      <!-- Exit System -->
+      <div class="card student">
+        <div class="card-title">🚪 Exit System</div>
+        <div class="card-content">
+          You can exit SCWIS at any time without affecting your access to other campus services
+        </div>
+        <button class="btn btn-danger btn-large">Exit SCWIS (No Reason Required)</button>
+      </div>
+    </div>
+    
+    <div class="bottom-nav">
+      <div class="bottom-nav-item" onclick="showStudentPage('wall')">
+        <div class="icon">🏠</div>
+        <div>Wall</div>
+      </div>
+      <div class="bottom-nav-item" onclick="showStudentPage('care')">
+        <div class="icon">💙</div>
+        <div>Care</div>
+      </div>
+      <div class="bottom-nav-item" onclick="showStudentPage('messages')">
+        <div class="icon">🔔</div>
+        <div>Messages</div>
+      </div>
+      <div class="bottom-nav-item active student" onclick="showStudentPage('privacy')">
+        <div class="icon">⚙️</div>
+        <div>Privacy</div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Page 8: Chat with Care Ambassador -->
+  <div id="student-chat" class="page">
+    <div class="top-bar student">
+      <div class="back-btn" onclick="showStudentPage('care')">← Back to Care</div>
+      <div>Care Ambassador</div>
+      <div style="font-size: 12px; cursor: pointer;">🚨 Report</div>
+    </div>
+    
+    <div class="main-content" style="background: #f0f2f5;">
+      <div class="alert alert-warning">
+        ⚠️ Please do not ask for or share any personally identifiable information
+      </div>
+      
+      <!-- Chat Messages -->
+      <div style="background: #fff; border-radius: 12px; padding: 12px; margin-bottom: 12px;">
+        <div style="font-size: 12px; color: #777; margin-bottom: 4px;">Care Ambassador · 10:30</div>
+        <div style="font-size: 14px; line-height: 1.6;">
+          Hey there! Happy to chat with you. How have things been going lately? Anything on your mind?
+        </div>
+      </div>
+      
+      <div style="background: #E3F2FD; border-radius: 12px; padding: 12px; margin-bottom: 12px; margin-left: 40px;">
+        <div style="font-size: 12px; color: #777; margin-bottom: 4px; text-align: right;">Me · 10:32</div>
+        <div style="font-size: 14px; line-height: 1.6;">
+          Hey... yeah I've been dealing with finals stress, feeling kinda anxious tbh
+        </div>
+      </div>
+      
+      <div style="background: #fff; border-radius: 12px; padding: 12px; margin-bottom: 12px;">
+        <div style="font-size: 12px; color: #777; margin-bottom: 4px;">Care Ambassador · 10:35</div>
+        <div style="font-size: 14px; line-height: 1.6;">
+          I totally get that - finals week can be really overwhelming! Have you found any strategies that help you manage the stress?
+        </div>
+      </div>
+    </div>
+    
+    <div style="padding: 16px 20px; background: #fff; border-top: 1px solid #e0e0e0;">
+      <div class="alert alert-warning" style="margin-bottom: 12px;">
+        Do not share personal identity information
+      </div>
+      <div style="display: flex; gap: 10px;">
+        <input type="text" class="input-field" placeholder="Type a message..." style="flex: 1; margin-bottom: 0;">
+        <button class="btn btn-primary student" style="margin: 0;">Send</button>
+      </div>
+    </div>
+  </div>
+  
+</div>
+
+<!-- ═══════════════════════════════════════
+     PGCC PROFESSIONAL INTERFACE
+═══════════════════════════════════════ -->
+<div id="pgcc-interface" class="phone-frame">
+  
+  <!-- Page 1: Alert Review Dashboard -->
+  <div id="pgcc-dashboard" class="page active">
+    <div class="top-bar pgcc">
+      <div>SCWIS PGCC Console</div>
+      <div style="font-size: 12px; cursor: pointer;">Logout</div>
+    </div>
+    
+    <div class="alert alert-warning" style="margin: 16px 20px 0;">
+      ⚠️ Accessing protected student health information (All operations logged)
+    </div>
+    
+    <div class="nav-bar">
+      <div class="nav-item active pgcc" onclick="showPgccPage('dashboard')">Alert Review</div>
+      <div class="nav-item" onclick="showPgccPage('cases')">Case Management</div>
+      <div class="nav-item" onclick="showPgccPage('schedule')">Schedule</div>
+    </div>
+    
+    <div class="stats-bar">
+      <div class="stat-item">
+        <div class="stat-value pgcc">7</div>
+        <div class="stat-label">Today</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value pgcc">12</div>
+        <div class="stat-label">Pending</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value pgcc">45</div>
+        <div class="stat-label">Processed</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value pgcc">2.3%</div>
+        <div class="stat-label">False+</div>
+      </div>
+    </div>
+    
+    <div class="main-content">
+      <!-- High Risk Alert -->
+      <div class="card pgcc" style="cursor: pointer;" onclick="showPgccPage('alert-detail-high')">
+        <div class="card-title">
+          ⚠️ High Risk Alert <span class="badge badge-high">HIGH</span>
+        </div>
+        <div class="card-meta">Alert ID: ALT-2024-1156 | Generated: Today 09:23</div>
+        <div class="card-content">
+          <strong>AI Analysis:</strong> Student's campus wall posts show persistent negative sentiment over 7 days. Library visits down 60%, dining frequency reduced, LMS login at unusual hours (2-4am). Immediate attention recommended.
+        </div>
+        <div class="card-content">
+          <strong>AI Risk Score:</strong> 87/100 (High Risk)
+        </div>
+      </div>
+      
+      <!-- Medium Risk Alert -->
+      <div class="card pgcc" style="cursor: pointer;" onclick="showPgccPage('alert-detail-medium')">
+        <div class="card-title">
+          Medium Risk Alert <span class="badge badge-medium">MEDIUM</span>
+        </div>
+        <div class="card-meta">Alert ID: ALT-2024-1157 | Generated: Today 10:45</div>
+        <div class="card-content">
+          <strong>AI Analysis:</strong> Student mentioned "stress" and "anxiety" in recent posts, but other behavioral data (library, gym, dining) shows no significant abnormalities. Peer support recommended.
+        </div>
+        <div class="card-content">
+          <strong>AI Risk Score:</strong> 56/100 (Medium Risk)
+        </div>
+      </div>
+      
+      <!-- Low Risk Alert -->
+      <div class="card pgcc" style="cursor: pointer;" onclick="showPgccPage('alert-detail-low')">
+        <div class="card-title">
+          Low Risk Alert <span class="badge badge-low">LOW</span>
+        </div>
+        <div class="card-meta">Alert ID: ALT-2024-1158 | Generated: Today 11:20</div>
+        <div class="card-content">
+          <strong>AI Analysis:</strong> Slight decrease in gym visit frequency. All other metrics normal. Likely normal routine adjustment. Continued monitoring suggested.
+        </div>
+        <div class="card-content">
+          <strong>AI Risk Score:</strong> 32/100 (Low Risk)
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Page 2: High Risk Alert Detail -->
+  <div id="pgcc-alert-detail-high" class="page">
+    <div class="top-bar pgcc">
+      <div class="back-btn" onclick="showPgccPage('dashboard')">← Back</div>
+      <div>High Risk Alert</div>
+      <div></div>
+    </div>
+    
+    <div class="main-content">
+      <div class="alert alert-danger">
+        ⚠️ High Risk Alert · Urgent Intervention · All operations logged · Please review within 15 minutes
+      </div>
+      
+      <div class="info-box">
+        <div style="font-weight: 700; margin-bottom: 8px;">Alert Information (Read-only)</div>
+        <div class="info-row">
+          <div class="info-label">Alert ID:</div>
+          <div class="info-value">ALT-2024-1156</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Generated:</div>
+          <div class="info-value">Today 09:23</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Student ID:</div>
+          <div class="info-value">ANON-78945</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">AI Risk Score:</div>
+          <div class="info-value">87/100</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">AI Summary:</div>
+          <div class="info-value">Persistent negative sentiment in posts, behavioral data shows isolation patterns, academic engagement at unusual hours</div>
+        </div>
+      </div>
+      
+      <div class="collapsible" onclick="toggleCollapsible(this)">
+        📊 View Detailed Behavioral Data ▼
+      </div>
+      <div class="collapsible-content">
+        <strong>Campus Wall:</strong> 3 posts with negative sentiment<br>
+        <span class="link" onclick="alert('Post 1: Been pulling all-nighters lately... like 2-3am regularly 😴😵 Feeling kinda anxious about everything...')">→ View post 1</span> | 
+        <span class="link" onclick="alert('Post 2: Everything feels overwhelming rn')">→ View post 2</span> | 
+        <span class="link" onclick="alert('Post 3: Not sure how to handle all this stress anymore')">→ View post 3</span><br><br>
+        
+        <strong>Library:</strong> Last visit 2024-05-01 (15 days ago)<br>
+        <strong>Dining:</strong> Only 2 meals in past 3 days<br>
+        <strong>LMS:</strong> 5 late-night logins (2-4am) in past 7 days<br>
+        <strong>Gym:</strong> No visits in past 14 days<br>
+        <strong>Dorm:</strong> Late check-ins, irregular sleep patterns
+      </div>
+      
+      <div class="card-title" style="margin-top: 20px;">Schedule Counselling Session</div>
+      
+      <div class="input-group">
+        <div class="input-label">Assign Counsellor (Required)</div>
+        <div class="radio-group">
+          <div class="radio-item">
+            <input type="radio" name="counselor" id="self" checked>
+            <label for="self">Myself (Current: Dr. Wang)</label>
+          </div>
+          <div class="radio-item">
+            <input type="radio" name="counselor" id="other">
+            <label for="other">Refer to: </label>
+            <select style="margin-left: 8px; padding: 4px 8px;">
+              <option>Dr. Johnson Lee</option>
+              <option>Dr. Sarah Chen</option>
+              <option>Dr. Michael Park</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      
+      <div class="input-group">
+        <div class="input-label">Counselling Time (Required)</div>
+        <div style="margin-bottom: 8px; font-size: 14px; color: #777;">Quick Options (Next 72 hours):</div>
+        <div class="time-slots">
+          <div class="time-slot">Today 10:00</div>
+          <div class="time-slot">Today 11:00</div>
+          <div class="time-slot">Today 14:00</div>
+          <div class="time-slot">Today 15:00</div>
+        </div>
+      </div>
+      
+      <div class="input-group">
+        <div class="input-label">Counselling Type (Required)</div>
+        <div class="radio-group">
+          <div class="radio-item">
+            <input type="radio" name="type" id="urgent" checked>
+            <label for="urgent">Urgent One-on-One Session</label>
+          </div>
+          <div class="radio-item">
+            <input type="radio" name="type" id="crisis">
+            <label for="crisis">Crisis Intervention</label>
+          </div>
+        </div>
+      </div>
+      
+      <div class="input-group">
+        <div class="input-label">Special Notes (Optional)</div>
+        <textarea class="input-field" placeholder="Any special circumstances or intervention considerations..."></textarea>
+      </div>
+      
+      <div class="input-group">
+        <div class="input-label">Student Notification Method</div>
+        <div class="checkbox-group">
+          <div class="checkbox-item">
+            <input type="checkbox" id="app-notif" checked>
+            <label for="app-notif">In-app Push Notification</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="sms-notif" checked>
+            <label for="sms-notif">SMS (Time & location only, no mental health mention)</label>
+          </div>
+        </div>
+      </div>
+      
+      <button class="btn btn-danger btn-large" onclick="alert('Appointment scheduled & notification sent'); showPgccPage('dashboard');">Confirm & Send Notification</button>
+      <button class="btn btn-secondary btn-large" onclick="showPgccPage('reject-form')">Reject Alert</button>
+    </div>
+  </div>
+  
+  <!-- Page 3: Medium Risk Alert Detail -->
+  <div id="pgcc-alert-detail-medium" class="page">
+    <div class="top-bar pgcc">
+      <div class="back-btn" onclick="showPgccPage('dashboard')">← Back</div>
+      <div>Medium Risk Alert</div>
+      <div></div>
+    </div>
+    
+    <div class="main-content">
+      <div class="alert alert-warning">
+        ⚠️ Medium Risk Alert · Peer Support Recommended · Review Required
+      </div>
+      
+      <div class="info-box">
+        <div style="font-weight: 700; margin-bottom: 8px;">Alert Information (Read-only)</div>
+        <div class="info-row">
+          <div class="info-label">Alert ID:</div>
+          <div class="info-value">ALT-2024-1157</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Student ID:</div>
+          <div class="info-value">ANON-56234</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">AI Risk Score:</div>
+          <div class="info-value">56/100</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">AI Summary:</div>
+          <div class="info-value">Mentioned stress/anxiety keywords in posts, other metrics within normal range</div>
+        </div>
+      </div>
+      
+      <div class="collapsible" onclick="toggleCollapsible(this)">
+        📊 View Detailed Behavioral Data ▼
+      </div>
+      <div class="collapsible-content">
+        <strong>Campus Wall:</strong> 2 posts mentioning stress<br>
+        <span class="link" onclick="alert('Post: Finals week stress is killing me rn 😓')">→ View post 1</span> | 
+        <span class="link" onclick="alert('Post: Anyone got tips for dealing with anxiety?')">→ View post 2</span><br><br>
+        
+        <strong>Library:</strong> Last visit yesterday (normal)<br>
+        <strong>Dining:</strong> 3 meals/day (normal)<br>
+        <strong>LMS:</strong> Regular daytime logins (normal)<br>
+        <strong>Gym:</strong> 3 visits this week (normal)<br>
+        <strong>Dorm:</strong> Regular check-in patterns (normal)
+      </div>
+      
+      <button class="btn btn-primary pgcc btn-large" onclick="alert('Peer ambassador matched & invitation sent'); showPgccPage('dashboard');">Approve & Match Care Ambassador</button>
+      <button class="btn btn-secondary btn-large" onclick="showPgccPage('reject-form')">Reject Alert</button>
+      <button class="btn btn-secondary btn-large" onclick="showPgccPage('dashboard')">Mark for Observation</button>
+    </div>
+  </div>
+  
+  <!-- Page 4: Low Risk Alert Detail -->
+  <div id="pgcc-alert-detail-low" class="page">
+    <div class="top-bar pgcc">
+      <div class="back-btn" onclick="showPgccPage('dashboard')">← Back</div>
+      <div>Low Risk Alert</div>
+      <div></div>
+    </div>
+    
+    <div class="main-content">
+      <div class="alert alert-info">
+        ℹ️ Low Risk Alert · Monitoring Recommended
+      </div>
+      
+      <div class="info-box">
+        <div style="font-weight: 700; margin-bottom: 8px;">Alert Information (Read-only)</div>
+        <div class="info-row">
+          <div class="info-label">Alert ID:</div>
+          <div class="info-value">ALT-2024-1158</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Student ID:</div>
+          <div class="info-value">ANON-92341</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">AI Risk Score:</div>
+          <div class="info-value">32/100</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">AI Summary:</div>
+          <div class="info-value">Minor decrease in gym frequency, all other metrics normal</div>
+        </div>
+      </div>
+      
+      <div class="collapsible" onclick="toggleCollapsible(this)">
+        📊 View Detailed Behavioral Data ▼
+      </div>
+      <div class="collapsible-content">
+        <strong>Campus Wall:</strong> Neutral/positive sentiment (normal)<br>
+        <strong>Library:</strong> Regular visits (normal)<br>
+        <strong>Dining:</strong> 3 meals/day (normal)<br>
+        <strong>LMS:</strong> Regular engagement (normal)<br>
+        <strong>Gym:</strong> 1 visit this week (down from usual 3)<br>
+        <strong>Dorm:</strong> Regular patterns (normal)
+      </div>
+      
+      <button class="btn btn-primary pgcc btn-large" onclick="alert('Peer ambassador matched'); showPgccPage('dashboard');">Approve & Match Care Ambassador</button>
+      <button class="btn btn-secondary btn-large" onclick="showPgccPage('reject-form')">Reject Alert</button>
+      <button class="btn btn-secondary btn-large" onclick="showPgccPage('dashboard')">Mark for Observation</button>
+    </div>
+  </div>
+  
+  <!-- Page 5: Reject Alert Form -->
+  <div id="pgcc-reject-form" class="page">
+    <div class="top-bar pgcc">
+      <div class="back-btn" onclick="history.back()">← Back</div>
+      <div>Reject Alert</div>
+      <div></div>
+    </div>
+    
+    <div class="main-content">
+      <div class="alert alert-warning">
+        ⚠️ Rejection Reason Required for AI Learning & Accuracy Improvement
+      </div>
+      
+      <div class="input-group">
+        <div class="input-label">Primary Rejection Reason (Required)</div>
+        <div class="radio-group">
+          <div class="radio-item">
+            <input type="radio" name="reject-reason" id="false1">
+            <label for="false1">False Positive - Data Misinterpretation</label>
+          </div>
+          <div class="radio-item">
+            <input type="radio" name="reject-reason" id="false2">
+            <label for="false2">Temporary Situational Stress (e.g., Finals Week)</label>
+          </div>
+          <div class="radio-item">
+            <input type="radio" name="reject-reason" id="false3">
+            <label for="false3">Student Already Under Care</label>
+          </div>
+          <div class="radio-item">
+            <input type="radio" name="reject-reason" id="false4">
+            <label for="false4">Insufficient Evidence for Intervention</label>
+          </div>
+          <div class="radio-item">
+            <input type="radio" name="reject-reason" id="false5">
+            <label for="false5">Cross-Source Data Inconsistency</label>
+          </div>
+          <div class="radio-item">
+            <input type="radio" name="reject-reason" id="false6">
+            <label for="false6">Other (Please specify below)</label>
+          </div>
+        </div>
+      </div>
+      
+      <div class="input-group">
+        <div class="input-label">Detailed Explanation (Required for AI Training)</div>
+        <textarea class="input-field" placeholder="Explain why this alert should be rejected. This feedback helps improve AI accuracy..."></textarea>
+      </div>
+      
+      <div class="alert alert-info">
+        <strong>How This Helps:</strong><br>
+        Your feedback trains the AI model to reduce false positives. Detailed explanations improve pattern recognition accuracy by 15-20% over time.
+      </div>
+      
+      <button class="btn btn-danger btn-large" onclick="alert('Alert rejected & feedback logged for AI training'); showPgccPage('dashboard');">Confirm Rejection</button>
+      <button class="btn btn-secondary btn-large" onclick="history.back()">Cancel</button>
+    </div>
+  </div>
+  
+  <!-- Page 6: Case Management -->
+  <div id="pgcc-cases" class="page">
+    <div class="top-bar pgcc">
+      <div class="back-btn" onclick="showPgccPage('dashboard')">← Back</div>
+      <div>Case Management</div>
+      <div></div>
+    </div>
+    
+    <div class="nav-bar">
+      <div class="nav-item active pgcc">All Cases</div>
+      <div class="nav-item">Low Risk</div>
+      <div class="nav-item">Medium Risk</div>
+      <div class="nav-item">High Risk</div>
+      <div class="nav-item" onclick="showPgccPage('cases-closed')">Closed</div>
+    </div>
+    
+    <div class="main-content">
+      <div class="card pgcc">
+        <div class="card-title">Case ID: CASE-2024-0342 <span class="badge badge-high">HIGH</span></div>
+        <div class="card-meta">
+          Student ID: ANON-ID-7829 | Counsellor: Dr. Wang | Started: 2024-12-15
+        </div>
+        <div class="card-content">
+          <strong>Intervention:</strong> Professional Counselling (Weekly)<br>
+          <strong>Latest Update:</strong> Student showing improvement, completed 3 sessions, continuing for 2 more weeks
+        </div>
+        <button class="btn btn-primary pgcc" onclick="showPgccPage('case-detail')">View Details</button>
+        <button class="btn btn-secondary" onclick="showPgccPage('case-edit')">Edit Case</button>
+        <button class="btn btn-secondary" onclick="alert('Case closed'); showPgccPage('cases');">Close Case</button>
+      </div>
+      
+      <div class="card pgcc">
+        <div class="card-title">Case ID: CASE-2024-0341 <span class="badge badge-medium">MEDIUM</span></div>
+        <div class="card-meta">
+          Student ID: ANON-ID-5623 | Type: Care Ambassador | Started: 2024-12-18
+        </div>
+        <div class="card-content">
+          <strong>Latest Update:</strong> Ambassador reports stable student status, good communication established
+        </div>
+        <button class="btn btn-primary pgcc" onclick="showPgccPage('case-detail')">View Details</button>
+        <button class="btn btn-secondary" onclick="showPgccPage('case-edit')">Edit Case</button>
+      </div>
+      
+      <div class="card pgcc">
+        <div class="card-title">Case ID: CASE-2024-0340 <span class="badge badge-low">LOW</span></div>
+        <div class="card-meta">
+          Student ID: ANON-ID-4512 | Type: Care Ambassador | Started: 2024-12-10
+        </div>
+        <div class="card-content">
+          <strong>Latest Update:</strong> Student declined peer support, system monitoring continues
+        </div>
+        <button class="btn btn-primary pgcc" onclick="showPgccPage('case-detail')">View Details</button>
+        <button class="btn btn-secondary" onclick="showPgccPage('case-edit')">Edit Case</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Page 7: Case Detail -->
+  <div id="pgcc-case-detail" class="page">
+    <div class="top-bar pgcc">
+      <div class="back-btn" onclick="showPgccPage('cases')">← Back to Cases</div>
+      <div>Case Details</div>
+      <div style="font-size: 12px;">
+        <span class="link" onclick="showPgccPage('case-edit')">Edit</span> | 
+        <span class="link" onclick="alert('Case closed')">Close</span>
+      </div>
+    </div>
+    
+    <div class="main-content">
+      <div class="badge badge-high" style="font-size: 14px; padding: 6px 14px;">HIGH RISK</div>
+      
+      <div class="info-box" style="margin-top: 12px;">
+        <div style="font-weight: 700; margin-bottom: 8px;">Case Information (Read-only)</div>
+        <div class="info-row">
+          <div class="info-label">Case ID:</div>
+          <div class="info-value">CASE-2024-0342</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Student ID:</div>
+          <div class="info-value">ANON-ID-7829</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Risk Level:</div>
+          <div class="info-value">High Risk</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Assigned Counsellor:</div>
+          <div class="info-value">Dr. Wang</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Start Date:</div>
+          <div class="info-value">2024-12-15</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Intervention Type:</div>
+          <div class="info-value">Professional Counselling (Weekly)</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Current Status:</div>
+          <div class="info-value">In Progress</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Expected Closure:</div>
+          <div class="info-value">2024-12-29</div>
+        </div>
+      </div>
+      
+      <div class="card-title" style="margin-top: 20px;">📅 Intervention Timeline</div>
+      <div class="timeline-item">
+        <div class="timeline-time">2024-12-22 14:30 - Dr. Wang</div>
+        <div class="timeline-content">
+          Completed 3rd session, student showing significant improvement, sleep patterns normalizing
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-time">2024-12-15 10:00 - Dr. Wang</div>
+        <div class="timeline-content">
+          Initial session completed, assessed as moderate depression, established weekly plan
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-time">2024-12-15 09:23 - System</div>
+        <div class="timeline-content">
+          High risk alert ALT-2024-1156 generated, Dr. Wang confirmed and scheduled counselling
+        </div>
+      </div>
+      
+      <div class="card-title" style="margin-top: 20px;">📝 Case Notes (Read-only)</div>
+      <div class="timeline-item">
+        <div class="timeline-time">2024-12-22 - Dr. Wang</div>
+        <div class="timeline-content">
+          Student reported academic pressure concerns. Taught breathing regulation techniques. Recommended 30min daily exercise. Next session: time management strategies.<br>
+          <span class="link">[Attachment: Emotion_Log.pdf]</span>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-time">2024-12-15 - Dr. Wang</div>
+        <div class="timeline-content">
+          Initial assessment: PHQ-9 score 18, moderate depression. No suicidal ideation.
+        </div>
+      </div>
+      
+      <div class="collapsible" onclick="toggleCollapsible(this)">
+        📊 Related Behavioral Data ▼
+      </div>
+      <div class="collapsible-content">
+        <strong>Campus Wall:</strong> 3 negative posts (last 7 days)<br>
+        <strong>Library:</strong> 60% decrease (Dec 8-15)<br>
+        <strong>Dining:</strong> 2 meals in past 3 days<br>
+        <strong>LMS:</strong> 5 late-night logins (2-4am) in 7 days<br>
+        <strong>Trend:</strong> Behavioral data gradually normalizing this week
+      </div>
+      
+      <div class="card-title" style="margin-top: 20px;">📜 Operation History (Read-only)</div>
+      <div style="font-size: 13px; color: #777; line-height: 2;">
+        2024-12-22 15:00 - Dr. Wang - Updated case notes<br>
+        2024-12-15 10:30 - Dr. Wang - Modified intervention to weekly counselling<br>
+        2024-12-15 09:25 - Dr. Wang - Created case
+      </div>
+    </div>
+  </div>
+  
+  <!-- Page 8: Edit Case -->
+  <div id="pgcc-case-edit" class="page">
+    <div class="top-bar pgcc">
+      <div class="back-btn" onclick="showPgccPage('case-detail')">← Back</div>
+      <div>Edit Case</div>
+      <div style="font-size: 12px;">
+        <span class="link" onclick="alert('Changes saved'); showPgccPage('case-detail');">Save</span> | 
+        <span class="link" onclick="showPgccPage('case-detail')">Cancel</span>
+      </div>
+    </div>
+    
+    <div class="main-content">
+      <div class="badge badge-high" style="font-size: 14px; padding: 6px 14px;">HIGH RISK</div>
+      
+      <div class="card pgcc" style="margin-top: 12px;">
+        <div class="card-title">Case Information (Partially Editable)</div>
+        
+        <div class="input-group">
+          <div class="input-label">Case ID (Read-only)</div>
+          <input type="text" class="input-field" value="CASE-2024-0342" disabled>
+        </div>
+        
+        <div class="input-group">
+          <div class="input-label">Student ID (Read-only)</div>
+          <input type="text" class="input-field" value="ANON-ID-7829" disabled>
+        </div>
+        
+        <div class="input-group">
+          <div class="input-label">Risk Level</div>
+          <select class="input-field">
+            <option selected>High Risk</option>
+            <option>Medium Risk</option>
+            <option>Low Risk</option>
+          </select>
+        </div>
+        
+        <div class="input-group">
+          <div class="input-label">Assigned Counsellor (Admin only)</div>
+          <select class="input-field">
+            <option selected>Dr. Wang</option>
+            <option>Dr. Johnson Lee</option>
+            <option>Dr. Sarah Chen</option>
+            <option>Dr. Michael Park</option>
+          </select>
+        </div>
+        
+        <div class="input-group">
+          <div class="input-label">Start Date (Read-only)</div>
+          <input type="text" class="input-field" value="2024-12-15" disabled>
+        </div>
+        
+        <div class="input-group">
+          <div class="input-label">Intervention Type</div>
+          <input type="text" class="input-field" value="Professional Counselling (Weekly)">
+        </div>
+        
+        <div class="input-group">
+          <div class="input-label">Current Status</div>
+          <select class="input-field">
+            <option selected>In Progress</option>
+            <option>Closed</option>
+            <option>Referred</option>
+          </select>
+        </div>
+        
+        <div class="input-group">
+          <div class="input-label">Expected Closure Date</div>
+          <input type="date" class="input-field" value="2024-12-29">
+        </div>
+      </div>
+      
+      <div class="card-title">📝 Add New Case Note</div>
+      <div class="card pgcc">
+        <textarea class="input-field" placeholder="Enter new case note..."></textarea>
+        <button class="btn btn-secondary" style="margin-top: 8px;">Upload Attachment (PDF/Image/Word)</button>
+        
+        <div class="divider"></div>
+        <div style="font-weight: 600; margin-bottom: 8px;">Historical Notes:</div>
+        <div class="timeline-item">
+          <div class="timeline-time">2024-12-22 - Dr. Wang</div>
+          <div class="timeline-content">
+            Student reported academic pressure concerns...
+          </div>
+        </div>
+      </div>
+      
+      <button class="btn btn-primary pgcc btn-large" onclick="alert('Changes saved'); showPgccPage('case-detail');">Save Changes</button>
+      <button class="btn btn-secondary btn-large" onclick="showPgccPage('case-detail')">Cancel</button>
+    </div>
+  </div>
+  
+  <!-- Page 9: Closed Cases -->
+  <div id="pgcc-cases-closed" class="page">
+    <div class="top-bar pgcc">
+      <div class="back-btn" onclick="showPgccPage('cases')">← Back</div>
+      <div>Closed Cases</div>
+      <div></div>
+    </div>
+    
+    <div class="main-content">
+      <div class="card pgcc">
+        <div class="card-title">Case ID: CASE-2024-0298 <span class="badge badge-medium">MEDIUM</span></div>
+        <div class="card-meta">
+          Student ID: ANON-ID-3421 | Closed: 2024-12-10 | Duration: 4 weeks
+        </div>
+        <div class="card-content">
+          <strong>Final Status:</strong> Successfully completed peer support program, student status stabilized
+        </div>
+        <button class="btn btn-primary pgcc" onclick="showPgccPage('case-detail')">View Details</button>
+      </div>
+      
+      <div class="card pgcc">
+        <div class="card-title">Case ID: CASE-2024-0285 <span class="badge badge-low">LOW</span></div>
+        <div class="card-meta">
+          Student ID: ANON-ID-2109 | Closed: 2024-12-05 | Duration: 2 weeks
+        </div>
+        <div class="card-content">
+          <strong>Final Status:</strong> Student declined support, continued monitoring showed normal patterns
+        </div>
+        <button class="btn btn-primary pgcc" onclick="showPgccPage('case-detail')">View Details</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Page 10: Schedule Management -->
+  <div id="pgcc-schedule" class="page">
+    <div class="top-bar pgcc">
+      <div class="back-btn" onclick="showPgccPage('dashboard')">← Back</div>
+      <div>Schedule Management</div>
+      <div style="font-size: 12px; cursor: pointer;">New Appointment</div>
+    </div>
+    
+    <div class="nav-bar">
+      <div class="nav-item active pgcc" onclick="showPgccPage('schedule-today')">Today</div>
+      <div class="nav-item" onclick="showPgccPage('schedule-week')">This Week</div>
+      <div class="nav-item" onclick="showPgccPage('schedule-month')">This Month</div>
+    </div>
+    
+    <div class="main-content">
+      <div class="card pgcc">
+        <div style="font-weight: 700; font-size: 16px; margin-bottom: 16px;">December 20, 2024 - Friday</div>
+        
+        <div style="background: #f8f9fa; border-left: 4px solid #5B3FB8; border-radius: 6px; padding: 12px; margin-bottom: 10px;">
+          <div style="font-size: 14px; font-weight: 700; color: #5B3FB8; margin-bottom: 4px;">09:00 - 10:00</div>
+          <div style="font-size: 14px; color: #555;">
+            Student ID: ANON-ID-7829 | 3rd Counselling Session
+          </div>
+          <div style="margin-top: 8px;">
+            <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;" onclick="showPgccPage('reschedule-appointment')">Reschedule</button>
+            <button class="btn btn-danger" style="padding: 6px 12px; font-size: 12px;">Cancel</button>
+          </div>
+        </div>
+        
+        <div style="background: #f8f9fa; border-left: 4px solid #5B3FB8; border-radius: 6px; padding: 12px; margin-bottom: 10px;">
+          <div style="font-size: 14px; font-weight: 700; color: #5B3FB8; margin-bottom: 4px;">14:00 - 15:00</div>
+          <div style="font-size: 14px; color: #555;">
+            Student ID: ANON-ID-5421 | Initial Assessment
+          </div>
+          <div style="margin-top: 8px;">
+            <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;" onclick="showPgccPage('reschedule-appointment')">Reschedule</button>
+            <button class="btn btn-danger" style="padding: 6px 12px; font-size: 12px;">Cancel</button>
+          </div>
+        </div>
+        
+        <div style="background: #f8f9fa; border-left: 4px solid #5B3FB8; border-radius: 6px; padding: 12px; margin-bottom: 10px;">
+          <div style="font-size: 14px; font-weight: 700; color: #5B3FB8; margin-bottom: 4px;">16:00 - 17:00</div>
+          <div style="font-size: 14px; color: #555;">
+            Group Session: Finals Stress Management Workshop
+          </div>
+          <div style="margin-top: 8px;">
+            <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;" onclick="showPgccPage('reschedule-appointment')">Reschedule</button>
+            <button class="btn btn-danger" style="padding: 6px 12px; font-size: 12px;">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Page 11: Week Schedule -->
+  <div id="pgcc-schedule-week" class="page">
+    <div class="top-bar pgcc">
+      <div class="back-btn" onclick="showPgccPage('schedule')">← Back</div>
+      <div>This Week's Schedule</div>
+      <div></div>
+    </div>
+    
+    <div class="main-content">
+      <div class="alert alert-info">
+        Week view showing all appointments Dec 20-26, 2024
+      </div>
+      <div class="card pgcc">
+        <div style="font-weight: 700; margin-bottom: 12px;">Total: 12 appointments this week</div>
+        <div style="font-size: 14px; line-height: 2;">
+          Monday: 2 appointments<br>
+          Tuesday: 3 appointments<br>
+          Wednesday: 1 appointment<br>
+          Thursday: 2 appointments<br>
+          Friday: 3 appointments (Today)<br>
+          Saturday: 1 appointment<br>
+          Sunday: 0 appointments
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Page 12: Month Schedule -->
+  <div id="pgcc-schedule-month" class="page">
+    <div class="top-bar pgcc">
+      <div class="back-btn" onclick="showPgccPage('schedule')">← Back</div>
+      <div>This Month's Schedule</div>
+      <div></div>
+    </div>
+    
+    <div class="main-content">
+      <div class="alert alert-info">
+        December 2024 monthly view
+      </div>
+      <div class="card pgcc">
+        <div style="font-weight: 700; margin-bottom: 12px;">Total: 48 appointments this month</div>
+        <div style="font-size: 14px; line-height: 1.8;">
+          Most appointments scheduled in Week 3 (finals week)<br>
+          Peak days: Mondays and Thursdays<br>
+          Average: 2.4 appointments per working day
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Page 13: Reschedule Appointment -->
+  <div id="pgcc-reschedule-appointment" class="page">
+    <div class="top-bar pgcc">
+      <div class="back-btn" onclick="showPgccPage('schedule')">← Back</div>
+      <div>Reschedule Appointment</div>
+      <div></div>
+    </div>
+    
+    <div class="main-content">
+      <div class="info-box">
+        <div style="font-weight: 700; margin-bottom: 8px;">Original Appointment (Read-only)</div>
+        <div class="info-row">
+          <div class="info-label">Time:</div>
+          <div class="info-value">09:00 - 10:00 (2024-12-22)</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Student:</div>
+          <div class="info-value">ANON-ID-7829 | 3rd Counselling Session</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Counsellor:</div>
+          <div class="info-value">Dr. Wang</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Location:</div>
+          <div class="info-value">PGCC Room 302</div>
+        </div>
+      </div>
+      
+      <div class="input-group">
+        <div class="input-label">Select New Time (Required)</div>
+        <div class="alert alert-danger" style="font-size: 13px;">
+          🔴 High-risk case priority: Only showing slots within next 72 hours
+        </div>
+        
+        <div style="margin: 12px 0; font-weight: 600;">Recommended Time Slots (Counsellor Available):</div>
+        <div class="radio-group">
+          <div class="radio-item">
+            <input type="radio" name="newslot" id="slot1">
+            <label for="slot1">Today 14:00-15:00</label>
+          </div>
+          <div class="radio-item">
+            <input type="radio" name="newslot" id="slot2">
+            <label for="slot2">Tomorrow 10:00-11:00</label>
+          </div>
+          <div class="radio-item">
+            <input type="radio" name="newslot" id="slot3">
+            <label for="slot3">Tomorrow 14:00-15:00</label>
+          </div>
+          <div class="radio-item">
+            <input type="radio" name="newslot" id="slot4">
+            <label for="slot4">Day After Tomorrow 09:00-10:00</label>
+          </div>
+        </div>
+        
+        <div style="margin-top: 12px; font-size: 13px; color: #777;">
+          Or custom time: 
+          <input type="date" style="padding: 4px 8px; border: 1px solid #ddd; border-radius: 4px; margin: 0 8px;">
+          <input type="time" style="padding: 4px 8px; border: 1px solid #ddd; border-radius: 4px;">
+        </div>
+        
+        <div style="margin-top: 8px; font-size: 13px; color: #777;">
+          💡 Tip: If no slots available, contact PGCC Director for emergency scheduling
+        </div>
+      </div>
+      
+      <div class="input-group">
+        <div class="input-label">Reason for Rescheduling (Required)</div>
+        <div class="radio-group">
+          <div class="radio-item">
+            <input type="radio" name="reschedule-reason" id="reas1">
+            <label for="reas1">Student Request</label>
+          </div>
+          <div class="radio-item">
+            <input type="radio" name="reschedule-reason" id="reas2">
+            <label for="reas2">Counsellor Schedule Conflict</label>
+          </div>
+          <div class="radio-item">
+            <input type="radio" name="reschedule-reason" id="reas3">
+            <label for="reas3">Student Unavailable</label>
+          </div>
+          <div class="radio-item">
+            <input type="radio" name="reschedule-reason" id="reas4">
+            <label for="reas4">Other: <input type="text" placeholder="Specify..." style="padding: 4px 8px; border: 1px solid #ddd; border-radius: 4px; margin-left: 8px;"></label>
+          </div>
+        </div>
+      </div>
+      
+      <div class="input-group">
+        <div class="input-label">Student Notification Method</div>
+        <div class="checkbox-group">
+          <div class="checkbox-item">
+            <input type="checkbox" id="app-reschedule" checked disabled>
+            <label for="app-reschedule">In-app Push Notification</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="sms-reschedule" checked disabled>
+            <label for="sms-reschedule">SMS Notification</label>
+          </div>
+        </div>
+        
+        <div class="alert alert-info" style="margin-top: 8px; font-size: 13px;">
+          ✅ Notification Preview (Time & location only, no mental health mention):<br>
+          "Your appointment has been rescheduled to: December 23, 2024 10:00-11:00, Location: PGCC Room 302"
+        </div>
+      </div>
+      
+      <button class="btn btn-primary pgcc btn-large" onclick="alert('Rescheduled & notification sent'); showPgccPage('schedule');">Confirm Reschedule & Send Notification</button>
+      <button class="btn btn-secondary btn-large" onclick="showPgccPage('schedule')">Cancel</button>
+    </div>
+  </div>
+  
+</div>
+
+<!-- ═══════════════════════════════════════
+     CARE AMBASSADOR INTERFACE
+═══════════════════════════════════════ -->
+<div id="ambassador-interface" class="phone-frame">
+  
+  <!-- Page 1: Task List Dashboard -->
+  <div id="ambassador-tasks" class="page active">
+    <div class="top-bar ambassador">
+      <div>SCWIS Care Ambassador</div>
+      <div style="font-size: 12px; cursor: pointer;">Logout</div>
+    </div>
+    
+    <div class="alert alert-warning" style="margin: 16px 20px 0;">
+      ⚠️ Protect student privacy - Do not ask for or share personally identifiable information
+    </div>
+    
+    <div class="stats-bar">
+      <div class="stat-item" onclick="showAmbassadorPage('tasks-ongoing')">
+        <div class="stat-value ambassador">2</div>
+        <div class="stat-label">In Progress</div>
+      </div>
+      <div class="stat-item" onclick="showAmbassadorPage('tasks-completed')">
+        <div class="stat-value ambassador">8</div>
+        <div class="stat-label">Completed</div>
+      </div>
+      <div class="stat-item" onclick="showAmbassadorPage('tasks-pending')">
+        <div class="stat-value ambassador">1</div>
+        <div class="stat-label">Pending</div>
+      </div>
+    </div>
+    
+    <div class="main-content">
+      <div class="card ambassador">
+        <div class="card-title">Task ID: TASK-2024-0567</div>
+        <div class="card-meta">Type: Peer Chat Support | Deadline: 2025-01-18 | Status: In Progress</div>
+        <div class="card-content">
+          <strong>Task Description:</strong> Provide 1-month anonymous peer chat support. Regular check-ins and progress updates required. Remember to protect privacy - no personal identity information.
+        </div>
+        <button class="btn btn-primary ambassador" onclick="showAmbassadorPage('chat')">Enter Chat</button>
+        <button class="btn btn-secondary" onclick="showAmbassadorPage('feedback')">Submit Feedback</button>
+      </div>
+      
+      <div class="card ambassador">
+        <div class="card-title">Task ID: TASK-2024-0572</div>
+        <div class="card-meta">Type: Peer Chat Support | Deadline: 2025-01-20 | Status: In Progress</div>
+        <div class="card-content">
+          <strong>Task Description:</strong> Provide 1-month anonymous peer chat support.
+        </div>
+        <button class="btn btn-primary ambassador" onclick="showAmbassadorPage('chat')">Enter Chat</button>
+        <button class="btn btn-secondary" onclick="showAmbassadorPage('feedback')">Submit Feedback</button>
+      </div>
+      
+      <div class="card ambassador">
+        <div class="card-title">Task ID: TASK-2024-0578</div>
+        <div class="card-meta">Type: Peer Chat Support | Deadline: 2025-01-22 | Status: Awaiting Start</div>
+        <div class="card-content">
+          <strong>Task Description:</strong> Newly assigned task, waiting for student to accept invitation
+        </div>
+        <button class="btn btn-secondary" disabled>Waiting for Student</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Page 2: Pending Tasks -->
+  <div id="ambassador-tasks-pending" class="page">
+    <div class="top-bar ambassador">
+      <div class="back-btn" onclick="showAmbassadorPage('tasks')">← Back</div>
+      <div>Pending Tasks</div>
+      <div></div>
+    </div>
+    
+    <div class="main-content">
+      <div class="alert alert-info">
+        Unassigned & newly matched peer care tasks (Not started)
+      </div>
+      
+      <div class="card ambassador">
+        <div class="card-title">Task ID: TASK-2024-0578</div>
+        <div class="card-meta">Type: Peer Chat | Deadline: 2025-01-22 | Status: Not Started</div>
+        <div class="card-content">
+          <strong>Task Summary:</strong> General emotional peer support
+        </div>
+        <button class="btn btn-primary ambassador" onclick="alert('Task started'); showAmbassadorPage('tasks-ongoing');">View Details & Start</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Page 3: Ongoing Tasks -->
+  <div id="ambassador-tasks-ongoing" class="page">
+    <div class="top-bar ambassador">
+      <div class="back-btn" onclick="showAmbassadorPage('tasks')">← Back</div>
+      <div>In Progress Tasks</div>
+      <div></div>
+    </div>
+    
+    <div class="main-content">
+      <div class="alert alert-info">
+        Ongoing peer support sessions (In progress)
+      </div>
+      
+      <div class="card ambassador">
+        <div class="card-title">Task ID: TASK-2024-0567</div>
+        <div class="card-meta">Type: Peer Chat | Deadline: 2025-01-18 | Status: In Progress</div>
+        <div class="card-content">
+          <strong>Task Summary:</strong> Ongoing daily emotional companion support
+        </div>
+        <button class="btn btn-primary ambassador" onclick="showAmbassadorPage('chat')">Enter Chat</button>
+        <button class="btn btn-secondary" onclick="showAmbassadorPage('feedback')">Submit Progress Feedback</button>
+      </div>
+      
+      <div class="card ambassador">
+        <div class="card-title">Task ID: TASK-2024-0572</div>
+        <div class="card-meta">Type: Peer Chat | Deadline: 2025-01-20 | Status: In Progress</div>
+        <div class="card-content">
+          <strong>Task Summary:</strong> Regular peer emotional support check-ins
+        </div>
+        <button class="btn btn-primary ambassador" onclick="showAmbassadorPage('chat')">Enter Chat</button>
+        <button class="btn btn-secondary" onclick="showAmbassadorPage('feedback')">Submit Progress Feedback</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Page 4: Completed Tasks -->
+  <div id="ambassador-tasks-completed" class="page">
+    <div class="top-bar ambassador">
+      <div class="back-btn" onclick="showAmbassadorPage('tasks')">← Back</div>
+      <div>Completed Tasks</div>
+      <div></div>
+    </div>
+    
+    <div class="main-content">
+      <div class="alert alert-info">
+        Closed & archived historical tasks (Read-only)
+      </div>
+      
+      <div class="card ambassador">
+        <div class="card-title">Task ID: TASK-2024-0489</div>
+        <div class="card-meta">Type: Peer Chat | Completed: 2024-12-15 | Status: Completed</div>
+        <div class="card-content">
+          <strong>Final Follow-up:</strong> General support session finished successfully. Student status stabilized.
+        </div>
+        <button class="btn btn-secondary">View Historical Details</button>
+      </div>
+      
+      <div class="card ambassador">
+        <div class="card-title">Task ID: TASK-2024-0456</div>
+        <div class="card-meta">Type: Peer Chat | Completed: 2024-12-08 | Status: Completed</div>
+        <div class="card-content">
+          <strong>Final Follow-up:</strong> Student showed improvement after 4-week support period. Case closed by PGCC.
+        </div>
+        <button class="btn btn-secondary">View Historical Details</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Page 5: Chat Interface -->
+  <div id="ambassador-chat" class="page">
+    <div class="top-bar ambassador">
+      <div class="back-btn" onclick="showAmbassadorPage('tasks')">← Back</div>
+      <div>Student</div>
+      <div style="font-size: 12px;">
+        <span style="cursor: pointer; margin-right: 10px;" onclick="showAmbassadorPage('feedback')">Feedback</span>
+        <span style="cursor: pointer; color: #D32F2F;">🚨 Report</span>
+      </div>
+    </div>
+    
+    <div class="main-content" style="background: #f0f2f5;">
+      <div class="alert alert-warning">
+        ⚠️ Do not ask for or share personally identifiable information
+      </div>
+      
+      <!-- Chat Messages -->
+      <div style="background: #E8F5E9; border-radius: 12px; padding: 12px; margin-bottom: 12px; margin-left: 40px;">
+        <div style="font-size: 12px; color: #777; margin-bottom: 4px; text-align: right;">Me · 10:30</div>
+        <div style="font-size: 14px; line-height: 1.6;">
+          Hey there! Happy to chat with you. How have things been going lately? Anything on your mind?
+        </div>
+      </div>
+      
+      <div style="background: #fff; border-radius: 12px; padding: 12px; margin-bottom: 12px;">
+        <div style="font-size: 12px; color: #777; margin-bottom: 4px;">Student · 10:32</div>
+        <div style="font-size: 14px; line-height: 1.6;">
+          Hey... yeah I've been dealing with finals stress, feeling kinda anxious tbh
+        </div>
+      </div>
+      
+      <div style="background: #E8F5E9; border-radius: 12px; padding: 12px; margin-bottom: 12px; margin-left: 40px;">
+        <div style="font-size: 12px; color: #777; margin-bottom: 4px; text-align: right;">Me · 10:35</div>
+        <div style="font-size: 14px; line-height: 1.6;">
+          I totally get that - finals week can be really overwhelming! Have you found any strategies that help you manage the stress?
+        </div>
+      </div>
+      
+      <div style="background: #fff; border-radius: 12px; padding: 12px; margin-bottom: 12px;">
+        <div style="font-size: 12px; color: #777; margin-bottom: 4px;">Student · 10:38</div>
+        <div style="font-size: 14px; line-height: 1.6;">
+          I try going to the gym sometimes, but honestly I've been lacking motivation lately
+        </div>
+      </div>
+    </div>
+    
+    <div style="padding: 16px 20px; background: #fff; border-top: 1px solid #e0e0e0;">
+      <div class="alert alert-warning" style="margin-bottom: 12px;">
+        Do not share personal identity information
+      </div>
+      <div style="display: flex; gap: 10px;">
+        <input type="text" class="input-field" placeholder="Type a message..." style="flex: 1; margin-bottom: 0;">
+        <button class="btn btn-primary ambassador" style="margin: 0;">Send</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Page 6: Progress Feedback Form -->
+  <div id="ambassador-feedback" class="page">
+    <div class="top-bar ambassador">
+      <div class="back-btn" onclick="showAmbassadorPage('tasks')">← Back</div>
+      <div>Submit Progress Feedback</div>
+      <div></div>
+    </div>
+    
+    <div class="main-content">
+      <div class="card ambassador">
+        <div class="input-group">
+          <div class="input-label">Task ID (Auto-filled)</div>
+          <input type="text" class="input-field" value="TASK-2024-0567" disabled>
+        </div>
+        
+        <div class="input-group">
+          <div class="input-label">Communication Status (Multi-select)</div>
+          <div class="checkbox-group">
+            <div class="checkbox-item">
+              <input type="checkbox" id="smooth" checked>
+              <label for="smooth">Communication Smooth</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="stable" checked>
+              <label for="stable">Student Emotionally Stable</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="low">
+              <label for="low">Student Showing Low Mood</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="followup">
+              <label for="followup">Needs Further Follow-up</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="escalate">
+              <label for="escalate">Recommend Escalation to Counsellor</label>
+            </div>
+          </div>
+        </div>
+        
+        <div class="input-group">
+          <div class="input-label">Detailed Description (Required) *</div>
+          <textarea class="input-field" placeholder="Please describe this session's communication status, student's condition, and your observations...">Student had smooth communication this week, proactively shared finals study plans. Emotional state relatively stable, mentioned gym workouts help with stress relief. Recommend maintaining twice-weekly check-in frequency.</textarea>
+        </div>
+        
+        <button class="btn btn-primary ambassador btn-large" onclick="alert('Feedback submitted'); showAmbassadorPage('tasks');">Submit Feedback</button>
+        <button class="btn btn-secondary btn-large">Save as Draft</button>
+      </div>
+    </div>
+  </div>
+  
+</div>
+
+<script>
+// System Switcher
+function switchSystem(system) {
+  document.getElementById('student-interface').classList.remove('active');
+  document.getElementById('pgcc-interface').classList.remove('active');
+  document.getElementById('ambassador-interface').classList.remove('active');
+  
+  document.getElementById(system + '-interface').classList.add('active');
+  
+  document.querySelectorAll('.system-tab').forEach(tab => tab.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+// Student Pages
+function showStudentPage(page) {
+  document.querySelectorAll('#student-interface .page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('#student-interface .bottom-nav-item').forEach(item => item.classList.remove('active', 'student'));
+  
+  const pages = {
+    'wall': ['student-wall', 0],
+    'care': ['student-care', 1],
+    'messages': ['student-messages', 2],
+    'privacy': ['student-privacy', 3],
+    'book-counselor': ['student-book-counselor', null],
+    'book-slot': ['student-book-slot', null],
+    'reschedule-request': ['student-reschedule-request', null],
+    'chat': ['student-chat', null]
+  };
+  
+  if (pages[page]) {
+    document.getElementById(pages[page][0]).classList.add('active');
+    if (pages[page][1] !== null) {
+      document.querySelectorAll('#student-interface .bottom-nav-item')[pages[page][1]].classList.add('active', 'student');
+    }
+  }
+}
+
+// PGCC Pages
+function showPgccPage(page) {
+  document.querySelectorAll('#pgcc-interface .page').forEach(p => p.classList.remove('active'));
+  document.getElementById('pgcc-' + page).classList.add('active');
+}
+
+// Ambassador Pages
+function showAmbassadorPage(page) {
+  document.querySelectorAll('#ambassador-interface .page').forEach(p => p.classList.remove('active'));
+  document.getElementById('ambassador-' + page).classList.add('active');
+}
+
+// Collapsible Toggle
+function toggleCollapsible(element) {
+  const content = element.nextElementSibling;
+  content.classList.toggle('active');
+  element.textContent = content.classList.contains('active') 
+    ? element.textContent.replace('▼', '▲')
+    : element.textContent.replace('▲', '▼');
+}
+</script>
+
+</body>
+</html>
